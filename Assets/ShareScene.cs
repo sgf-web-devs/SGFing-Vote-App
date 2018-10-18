@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using AlmostEngine.Screenshot;
 using System.Collections;
+using VoxelBusters.NativePlugins;
 
 public class ShareScene : MonoBehaviour {
 
@@ -43,15 +44,16 @@ public class ShareScene : MonoBehaviour {
     public void TakePicture()
     {
         Debug.Log("Take the picture");
-        CaptureTexture();
-    }
-
-    public void CaptureTexture()
-    {
         StartCoroutine(CaptureToTexture());
     }
 
-    IEnumerator CaptureToTexture()
+    public void SavePicture()
+    {
+        Debug.Log("Saving the picture");
+        StartCoroutine(CaptureToTexture("save"));
+    }
+
+    IEnumerator CaptureToTexture(string action = "share")
     {
         // The texture must be initialized before calling the capture method.
         if (TargetTexture == null)
@@ -63,5 +65,28 @@ public class ShareScene : MonoBehaviour {
         yield return StartCoroutine(ScreenshotTaker.CaptureScreenToTextureCoroutine(TargetTexture));
 
         // to something with target texture
+
+        if(action == "share")
+        {
+            FBShareComposer _composer = new FBShareComposer();
+            _composer.Text = "SGFing Vote On Nov 6th!";
+            _composer.AttachImage(TargetTexture);
+            NPBinding.Sharing.ShowView(_composer, FinishedSharing);
+        }
+
+        if(action == "save")
+        {
+            NPBinding.MediaLibrary.SaveImageToGallery(TargetTexture, SaveImageToGalleryFinished);
+        }
+    }
+
+    private void FinishedSharing(eShareResult _result)
+    {
+        Debug.Log("Finished Sharing");
+    }
+
+    private void SaveImageToGalleryFinished(bool _saved)
+    {
+        Debug.Log("Saved image to gallery successfully ? " + _saved);
     }
 }
