@@ -7,20 +7,20 @@ using UnityEngine.UI;
 
 public class SGFingVote : MonoBehaviour {
 
+    private AppController AppController;
+
     public Button CameraButton;
     public ScreenshotTaker ScreenshotTaker;
     public RawImage ScreenshotRawImage;
     Texture2D TargetTexture;
 
-    private AppController AppController;
+    void Start ()
+    {
 
-    // Use this for initialization
-    void Start () {
-        //DontDestroyOnLoad(transform.gameObject);
     }
 
-    // Update is called once per frame
-    void Update () {
+    void Update ()
+    {
 		
 	}
 
