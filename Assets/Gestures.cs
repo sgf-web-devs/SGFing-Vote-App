@@ -5,10 +5,13 @@ using UnityEngine;
 
 public class Gestures : MonoBehaviour {
 
-    public GameObject Brenda;
+    //public GameObject Brenda;
 
     private ScaleGestureRecognizer scaleGesture;
     private RotateGestureRecognizer rotateGesture;
+    private TapGestureRecognizer tapGesture;
+
+    private static GameObject objectToTransform;
 
     private void DebugText(string text, params object[] format)
     {
@@ -17,10 +20,14 @@ public class Gestures : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        Brenda.SetActive(false);
+        //Brenda.SetActive(false);
 
         CreateScaleGesture();
         CreateRotateGesture();
+        //CreateTapGesture();
+
+        rotateGesture.AllowSimultaneousExecution(scaleGesture);
+        scaleGesture.AllowSimultaneousExecution(rotateGesture);
 
 
         // prevent the one special no-pass button from passing through,
@@ -33,11 +40,34 @@ public class Gestures : MonoBehaviour {
 		
 	}
 
+    private void CreateTapGesture()
+    {
+        DebugText("tapp registered");
+        tapGesture = new TapGestureRecognizer();
+        tapGesture.StateUpdated += TapGestureCallback;
+        //tapGesture.RequireGestureRecognizerToFail = SwipeGestureRecognizer;
+        FingersScript.Instance.AddGesture(tapGesture);
+    }
+
+    private void TapGestureCallback(GestureRecognizer gesture)
+    {
+        if (gesture.State == GestureRecognizerState.Ended)
+        {
+            DebugText("tapppped");
+            DebugText("Tapped at {0}, {1}", gesture.FocusX, gesture.FocusY);
+            //CreateAsteroid(gesture.FocusX, gesture.FocusY);
+        }
+    }
+
     private static bool? CaptureGestureHandler(GameObject obj)
     {
+        //return false;
+
         // I've named objects PassThrough* if the gesture should pass through and NoPass* if the gesture should be gobbled up, everything else gets default behavior
-        if (obj.name == "Brenda" || obj.name == "Background")
+        if(obj.tag.Contains("gestureable"))
+        //if (obj.name.Contains("star"))
         {
+            objectToTransform = obj;
             // allow the pass through for any element named "PassThrough*"
             return false;
         }
@@ -52,7 +82,7 @@ public class Gestures : MonoBehaviour {
         return null;
     }
 
-    private void LateUpdate()
+    private void LateUpdateJunk()
     {
         //if (Time.timeSinceLevelLoad > nextAsteroid)
         //{
@@ -81,6 +111,7 @@ public class Gestures : MonoBehaviour {
 
     private void CreateScaleGesture()
     {
+        Debug.Log("hello?");
         scaleGesture = new ScaleGestureRecognizer();
         scaleGesture.StateUpdated += ScaleGestureCallback;
         FingersScript.Instance.AddGesture(scaleGesture);
@@ -94,7 +125,10 @@ public class Gestures : MonoBehaviour {
             // items so so they dont't get too big/small
 
             DebugText("Scaled: {0}, Focus: {1}, {2}, {3}", scaleGesture.ScaleMultiplier, scaleGesture.FocusX, scaleGesture.FocusY, Screen.width);
-            Brenda.transform.localScale *= scaleGesture.ScaleMultiplier;
+            //gesture.
+            //Brenda.transform.localScale *= scaleGesture.ScaleMultiplier;
+            //gameObject.transform.localScale *= scaleGesture.ScaleMultiplier;
+            objectToTransform.transform.localScale *= scaleGesture.ScaleMultiplier;
         }
     }
 
@@ -109,7 +143,9 @@ public class Gestures : MonoBehaviour {
     {
         if (gesture.State == GestureRecognizerState.Executing)
         {
-            Brenda.transform.Rotate(0.0f, 0.0f, rotateGesture.RotationRadiansDelta * Mathf.Rad2Deg);
+            //Brenda.transform.Rotate(0.0f, 0.0f, rotateGesture.RotationRadiansDelta * Mathf.Rad2Deg);
+            //gameObject.transform.Rotate(0.0f, 0.0f, rotateGesture.RotationRadiansDelta * Mathf.Rad2Deg);
+            objectToTransform.transform.Rotate(0.0f, 0.0f, rotateGesture.RotationRadiansDelta * Mathf.Rad2Deg);
         }
     }
 }
