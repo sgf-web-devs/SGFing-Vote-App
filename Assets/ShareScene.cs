@@ -14,6 +14,7 @@ public class ShareScene : MonoBehaviour {
     public RawImage ScreenshotRawImage;
     public GameObject CameraImageButtonsContainer;
     public GameObject StickerContainer;
+    public GameObject StickerCanvas;
 
     void Start ()
     {
@@ -88,5 +89,12 @@ public class ShareScene : MonoBehaviour {
     private void SaveImageToGalleryFinished(bool _saved)
     {
         Debug.Log("Saved image to gallery successfully ? " + _saved);
+    }
+
+    public void StickerSelectorClick(string StickerName)
+    {
+        Debug.Log(StickerName);
+        //Instantiate(Resources.Load(StickerName), transform.position, Quaternion.identity, StickerCanvas.transform);
+        Instantiate(Resources.Load(StickerName), StickerCanvas.transform);
     }
 }

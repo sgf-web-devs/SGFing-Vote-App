@@ -31,9 +31,18 @@ public class SGFCamera : MonoBehaviour {
         aspectFilter.aspectRatio = NatCam.Preview.width / (float)NatCam.Preview.height;
     }
 
+    public void SwitchCamera()
+    {
+        // Switch camera
+        if (NatCam.Camera.IsFrontFacing)
+            NatCam.Camera = DeviceCamera.RearCamera;
+        else
+            NatCam.Camera = DeviceCamera.FrontCamera;
+    }
+
 
     // Update is called once per frame
-	void Update () {
+    void Update () {
 		
 	}
 }
