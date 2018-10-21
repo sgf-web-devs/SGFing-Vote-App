@@ -46,6 +46,8 @@ public class SGFingVote : MonoBehaviour {
             TargetTexture = new Texture2D(2, 2);
         }
 
+        ScreenshotTaker.GetComponent<AudioSource>().Play(0);
+
         // We call the capture coroutine and wait for its termination
         yield return StartCoroutine(ScreenshotTaker.CaptureScreenToTextureCoroutine(TargetTexture));
 

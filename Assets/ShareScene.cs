@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using AlmostEngine.Screenshot;
 using System.Collections;
 using VoxelBusters.NativePlugins;
+using UnityEngine.Animations;
 
 public class ShareScene : MonoBehaviour {
 
@@ -17,6 +18,8 @@ public class ShareScene : MonoBehaviour {
     public GameObject StickerCanvas;
 
     private eShareOptions[] m_excludedOptions = new eShareOptions[0];
+    private Button saveButton;
+    private bool imageSaved = false;
 
     void Start ()
     {
@@ -50,10 +53,22 @@ public class ShareScene : MonoBehaviour {
         StartCoroutine(CaptureToTexture());
     }
 
-    public void SavePicture()
+    public void SavePicture(Button button)
     {
         Debug.Log("Saving the picture");
+
+        button.GetComponent<Image>().color = new Color32(255, 255, 255, 100);
+        saveButton = button;
+
+
         StartCoroutine(CaptureToTexture("save"));
+    }
+
+    IEnumerator AnimateSaveButton()
+    {
+        Debug.Log("changing button color back to white");
+        yield return new WaitForSeconds(1f);
+        saveButton.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
     }
 
     IEnumerator CaptureToTexture(string action = "share")
@@ -87,13 +102,17 @@ public class ShareScene : MonoBehaviour {
 
     private void SaveImageToGalleryFinished(bool _saved)
     {
+        if(_saved) {
+            //StartCoroutine(AnimateSaveButton());
+            saveButton.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+        }
+
         Debug.Log("Saved image to gallery successfully ? " + _saved);
     }
 
     public void StickerSelectorClick(string StickerName)
     {
         Debug.Log(StickerName);
-        //Instantiate(Resources.Load(StickerName), transform.position, Quaternion.identity, StickerCanvas.transform);
         Instantiate(Resources.Load(StickerName), StickerCanvas.transform);
     }
 }
