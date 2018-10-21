@@ -10,18 +10,20 @@ public class SGFCamera : MonoBehaviour {
     public AspectRatioFitter aspectFilter;
 
     // Use this for initialization
-    void Awake () {
-        //DontDestroyOnLoad(transform.gameObject);
-        //NatCam.Play(DeviceCamera.FrontCamera);
-        if (DeviceCamera.FrontCamera != null) {
-            NatCam.Play(DeviceCamera.FrontCamera);
-        } else {
-            NatCam.Play(DeviceCamera.Cameras[0]);
-        }
+    void Start()
+    {
+        NatCam.Camera = DeviceCamera.FrontCamera ?? DeviceCamera.Cameras[0];
 
+        if (!NatCam.Camera)
+        {
+            Debug.LogError("Camera is null");
+            return;
+        }
+        NatCam.Camera.PreviewResolution = CameraResolution._1920x1080;
+        NatCam.Camera.PhotoResolution = CameraResolution._1920x1080;
         NatCam.Play();
 
-        NatCam.Camera.FocusMode = FocusMode.AutoFocus;
+
         NatCam.OnStart += NatCam_OnStart;
 	}
 
@@ -29,6 +31,7 @@ public class SGFCamera : MonoBehaviour {
     {
         preview.texture = NatCam.Preview;
         aspectFilter.aspectRatio = NatCam.Preview.width / (float)NatCam.Preview.height;
+        NatCam.Camera.FocusMode = FocusMode.AutoFocus;
     }
 
     public void SwitchCamera()
@@ -38,6 +41,8 @@ public class SGFCamera : MonoBehaviour {
             NatCam.Camera = DeviceCamera.RearCamera;
         else
             NatCam.Camera = DeviceCamera.FrontCamera;
+
+        NatCam.Play();
     }
 
 
