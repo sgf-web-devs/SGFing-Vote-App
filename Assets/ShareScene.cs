@@ -16,6 +16,8 @@ public class ShareScene : MonoBehaviour {
     public GameObject StickerContainer;
     public GameObject StickerCanvas;
 
+    private eShareOptions[] m_excludedOptions = new eShareOptions[0];
+
     void Start ()
     {
         if(ScreenshotRawImage != null)
@@ -56,23 +58,20 @@ public class ShareScene : MonoBehaviour {
 
     IEnumerator CaptureToTexture(string action = "share")
     {
-        // The texture must be initialized before calling the capture method.
         if (TargetTexture == null)
         {
             TargetTexture = new Texture2D(2, 2);
         }
 
-        // We call the capture coroutine and wait for its termination
         yield return StartCoroutine(ScreenshotTaker.CaptureScreenToTextureCoroutine(TargetTexture));
-
-        // to something with target texture
 
         if(action == "share")
         {
-            FBShareComposer _composer = new FBShareComposer();
-            _composer.Text = "SGFing Vote On Nov 6th!";
-            _composer.AttachImage(TargetTexture);
-            NPBinding.Sharing.ShowView(_composer, FinishedSharing);
+            ShareSheet _shareSheet = new ShareSheet();
+            _shareSheet.Text = "SGFing Vote On Nov 6th!";
+            _shareSheet.AttachImage(TargetTexture);
+            NPBinding.UI.SetPopoverPointAtLastTouchPosition();
+            NPBinding.Sharing.ShowView(_shareSheet, FinishedSharing);
         }
 
         if(action == "save")
