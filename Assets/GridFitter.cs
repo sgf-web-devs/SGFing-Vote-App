@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Using this for the sticker selector grid
+// Auto calculates cell sizes to fit three across
+
 public class GridFitter : MonoBehaviour {
 
     private float width;
     public float columns;
 
-    // Use this for initialization
     void Start () {
         var spacingAmount = this.gameObject.GetComponent<GridLayoutGroup>().spacing.x;
 
@@ -20,7 +22,6 @@ public class GridFitter : MonoBehaviour {
         this.gameObject.GetComponent<GridLayoutGroup>().cellSize = newSize;
     }
 	
-	// Update is called once per frame
 	void Update () {
 		
 	}
